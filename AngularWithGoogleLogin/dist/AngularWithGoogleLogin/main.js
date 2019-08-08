@@ -111,7 +111,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<div class=\"text-center\">\n  <h1>\n    Welcome to {{ title }}!\n  </h1>  \n</div>\n\n<div class=\"container\">\n  <router-outlet></router-outlet>\n</div>\n"
+module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<div class=\"text-center\">\n  <h1>\n    {{ title }}\n  </h1>  \n</div>\n\n<div class=\"container\">\n  <router-outlet></router-outlet>\n</div>\n"
 
 /***/ }),
 
@@ -135,7 +135,7 @@ var __decorate = (undefined && undefined.__decorate) || function (decorators, ta
 
 var AppComponent = /** @class */ (function () {
     function AppComponent() {
-        this.title = 'Angular With Google Login';
+        this.title = 'ASP.NET Core + Angular + Google Login Demo Project';
     }
     AppComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
@@ -226,8 +226,17 @@ var AppModule = /** @class */ (function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkIfUserIsAuthenticated", function() { return checkIfUserIsAuthenticated; });
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+
+
 function checkIfUserIsAuthenticated(accountService) {
-    return function () { return accountService.updateUserAuthenticationStatus().toPromise(); };
+    return function () {
+        return accountService.updateUserAuthenticationStatus().pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["catchError"])(function (_) {
+            console.error('Error trying to validate if the user is authenticated. The most probable cause is that the ASP.NET Core project isn\'t running');
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_0__["of"])(null);
+        })).toPromise();
+    };
 }
 
 
@@ -240,7 +249,7 @@ function checkIfUserIsAuthenticated(accountService) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ""
+module.exports = ".margin-top-md {\n    margin-top: 50px;\n}"
 
 /***/ }),
 
@@ -251,7 +260,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"row\">\n  <div class=\"col-md-12 text-center\">\n    <h3 *ngIf=\"isUserAuthenticated\">Hello {{userName}}</h3>\n    <h3 *ngIf=\"!isUserAuthenticated\">Not authenticated</h3>\n  </div>\n</div>\n\n<div class=\"row\">\n  <div class=\"col-md-4\">\n    <button class=\"btn btn-dark btn-lg\" (click)=\"logout()\">Logout</button>\n  </div>\n  <div class=\"col-md-4\">\n    <button class=\"btn btn-light btn-lg\" (click)=\"simulateFailedCall()\">Get a 401</button>\n  </div>\n  <div class=\"col-md-4\">\n    <button class=\"btn btn-light btn-lg\" (click)=\"login()\">Login</button>\n  </div>\n</div>"
+module.exports = "<div class=\"row\">\n  <div class=\"col-md-12 text-center\">\n    <h3 *ngIf=\"isUserAuthenticated\">Hello {{userName}}</h3>\n    <h3 *ngIf=\"!isUserAuthenticated\">Not authenticated</h3>\n  </div>\n</div>\n\n<div class=\"row margin-top-md\" *ngIf=\"isUserAuthenticated\">\n  <div class=\"col-md-12 text-center\">\n    <button class=\"btn btn-dark btn-lg\" (click)=\"logout()\">Logout</button>\n  </div>\n</div>\n<div class=\"row margin-top-md\" *ngIf=\"!isUserAuthenticated\">\n  <div class=\"col-md-12 text-center\">\n    <button class=\"btn btn-primary btn-lg\" (click)=\"login()\">Login</button>\n  </div>\n</div>\n<div class=\"row margin-top-md\">\n  <div class=\"col-md-12 text-center\">\n    <button class=\"btn btn-light btn-lg\" (click)=\"simulateFailedCall()\">Get a 401</button>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -290,7 +299,7 @@ var HomeComponent = /** @class */ (function () {
     }
     HomeComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.accountService.isUserAuthenticated.subscribe(function (isAuthenticated) {
+        this.subscription = this.accountService.isUserAuthenticated.subscribe(function (isAuthenticated) {
             _this.isUserAuthenticated = isAuthenticated;
             if (_this.isUserAuthenticated) {
                 _this.httpClient.get(_environments_environment__WEBPACK_IMPORTED_MODULE_3__["environment"].apiUrl + "/home/name", { responseType: 'text', withCredentials: true }).subscribe(function (theName) {
@@ -299,19 +308,17 @@ var HomeComponent = /** @class */ (function () {
             }
         });
     };
+    HomeComponent.prototype.ngOnDestroy = function () {
+        this.subscription.unsubscribe();
+    };
     HomeComponent.prototype.logout = function () {
         this.accountService.logout();
     };
     HomeComponent.prototype.simulateFailedCall = function () {
-        this.httpClient.get(_environments_environment__WEBPACK_IMPORTED_MODULE_3__["environment"].apiUrl + "/home/fail").subscribe(function (result) {
-            console.log(result);
-        }, function (error) {
-            console.warn(error);
-        });
+        this.httpClient.get(_environments_environment__WEBPACK_IMPORTED_MODULE_3__["environment"].apiUrl + "/home/fail").subscribe();
     };
     HomeComponent.prototype.login = function () {
-        window.location.href = "https://www.blinkingcaret.com";
-        //this.accountService.login();
+        this.accountService.login();
     };
     HomeComponent = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -339,9 +346,8 @@ var HomeComponent = /** @class */ (function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Interceptor401Service", function() { return Interceptor401Service; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _account_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./account.service */ "./src/app/account.service.ts");
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
+/* harmony import */ var _account_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./account.service */ "./src/app/account.service.ts");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -354,28 +360,20 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-
 var Interceptor401Service = /** @class */ (function () {
     function Interceptor401Service(accountService) {
         this.accountService = accountService;
     }
     Interceptor401Service.prototype.intercept = function (req, next) {
         var _this = this;
-        return next.handle(req).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["tap"])(function (event) {
-            if (event instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpResponse"]) {
-                console.log('Successfull response from http interceptor', event.status);
-            }
-        }, function (error) {
-            console.log('error response from http interceptor', error.status);
+        return next.handle(req).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_2__["tap"])(null, function (error) {
             if (error.status === 401)
                 _this.accountService.setUserAsNotAuthenticated();
         }));
     };
     Interceptor401Service = __decorate([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
-            providedIn: 'root'
-        }),
-        __metadata("design:paramtypes", [_account_service__WEBPACK_IMPORTED_MODULE_2__["AccountService"]])
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])(),
+        __metadata("design:paramtypes", [_account_service__WEBPACK_IMPORTED_MODULE_1__["AccountService"]])
     ], Interceptor401Service);
     return Interceptor401Service;
 }());
@@ -445,7 +443,7 @@ Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformB
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(/*! /home/rdfi/Projects/GoogleSpa/AngularWithGoogleLogin/src/main.ts */"./src/main.ts");
+module.exports = __webpack_require__(/*! /home/rdfi/Projects/angular-aspnetcore-external-login/AngularWithGoogleLogin/src/main.ts */"./src/main.ts");
 
 
 /***/ })

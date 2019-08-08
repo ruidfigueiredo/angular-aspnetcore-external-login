@@ -25,11 +25,11 @@ export class AccountService {
   }
 
   login() {
-    this.document.location.href = "http://localhost:5001/account/SignInWithGoogle";
+    this.document.location.href = "http://localhost:5000/account/SignInWithGoogle";
   }
 
   logout() {
-    this.document.location.href = "http://localhost:5001/account/logout";
+    this.document.location.href = "http://localhost:5000/account/logout";
   }
   
 }

@@ -21,7 +21,7 @@ namespace GoogleSpaWeb
             services.AddMvc();
             services.AddCors(corsOptions =>
             {
-                corsOptions.AddPolicy("fully permissive", configurePolicy => configurePolicy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin().AllowCredentials());
+                corsOptions.AddPolicy("fully permissive", configurePolicy => configurePolicy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200").AllowCredentials()); //localhost:4200 is the default port an angular runs in dev mode with ng serve
             });
 
             services.AddDbContext<IdentityDbContext>(options =>
@@ -38,8 +38,8 @@ namespace GoogleSpaWeb
             .AddGoogle("Google", options =>
             {
                 options.CallbackPath = new PathString("/google-callback");
-                options.ClientId = "PUT_YOUR_CLIENT_ID_HERE";
-                options.ClientSecret = "PUT_YOUR_CLIENT_SECRET_HERE";
+                options.ClientId = "385606584586-c322eh58j4egl7knk0n7a27ktnks7kcs.apps.googleusercontent.com";
+                options.ClientSecret = "XYU5GuWRV30RQULhgaNTn7L6";
                 options.Events = new OAuthEvents
                 {
                     OnRemoteFailure = (RemoteFailureContext context) =>
