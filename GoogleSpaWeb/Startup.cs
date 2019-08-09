@@ -38,8 +38,8 @@ namespace GoogleSpaWeb
             .AddGoogle("Google", options =>
             {
                 options.CallbackPath = new PathString("/google-callback");
-                options.ClientId = "385606584586-c322eh58j4egl7knk0n7a27ktnks7kcs.apps.googleusercontent.com";
-                options.ClientSecret = "XYU5GuWRV30RQULhgaNTn7L6";
+                options.ClientId = "PUT_YOUR_CLIENT_ID_HERE";
+                options.ClientSecret = "PUT_YOUR_CLIENT_SECRET_HERE";
                 options.Events = new OAuthEvents
                 {
                     OnRemoteFailure = (RemoteFailureContext context) =>
